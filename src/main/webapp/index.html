@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>油掌柜APP下载</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="/css/buttons.css" />
+    <link rel="stylesheet" href="/css/weui.css">
+    <link rel="stylesheet" href="/css/jquery-weui.css">
+    <link rel="stylesheet" href="/css/search.css">
+    <style>
+
+    </style>
+</head>
+<body>
+<!--设置整体布局-->
+<div id="page">
+
+        <div id="logo">
+            <img src="/image/pt_logo.png" width="175px" height="55px" alt="莆田一下,你就知道">
+        </div>
+        <form id="search_form">
+            <div class="con-wrap">
+                <input type="text" maxlength="20" name="name" id="input_id" class="se_input adjust_input">
+                <div class="se_inner">
+                    <button id="search_btn" class="se_bn" type="submit">百度一下</button>
+                </div>
+            </div>
+        </form>
+    <div style="text-align: left;margin: 0 10px">
+        <div class="weui_panel weui_panel_access" style="margin-top: 10px">
+            <!--<div class="weui_panel_hd">共找到<span>100</span>条相关结果</div>-->
+            <div class="weui_panel_bd" id="hospital_list">
+            </div>
+            <!--<a href="javascript:void(0);" class="weui_panel_ft">查看更多</a>-->
+        </div>
+    </div>
+</div>
+</body>
+<script src="/js/jquery-2.1.4.js"></script>
+<script src="/js/jquery-weui.js"></script>
+<script type="text/javascript">
+
+    $('#input_id').focus(function(){
+            $("#hospital_list").html('');
+            $('#logo').css('display','block');
+            $('#page').css('margin-top','20%');
+    });
+//    $('#input_id').blur(function(){
+//            $('#logo').css('display','block');
+//            $('#page').css('margin-top', '20%');
+//    });
+    $('#search_btn').click(function(){
+        var name = $("#input_id").val();
+        if($.trim(name) == ''){
+            return false;
+        }else{
+            var html = '';
+            $.getJSON('/putian/hospitals/'+name,function(data){
+                if(data.code == '200'){
+                    $('#page').css('margin-top','2%');
+                    $('#logo').css('display','none');
+                    var dataList = data.putian;
+                    $.each(dataList,function(i,hos){
+                        html=html+"<div class='weui_media_box weui_media_text'><h4 class='weui_media_title'>"+hos.ptName+
+                                "</h4><p class='weui_media_desc'>"+hos.ptPhone+"</p><p class='weui_media_desc'>"+
+                                hos.ptAddress+"</p></div>";
+                    })
+                }else{
+                    $('#page').css('margin-top','2%');
+                    html=html+"<div class='weui_media_box weui_media_text'><h4 class='weui_media_title'>暂无相关数据</h4></div>";
+                }
+                $("#hospital_list").html(html);
+            });
+            return false;
+        }
+    });
+
+</script>
+</html>
